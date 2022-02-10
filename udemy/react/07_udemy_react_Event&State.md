@@ -45,6 +45,71 @@ date: 2021-02-04 Friday ~ 2021-02-08 Tuesday
   - State는 컴포넌트 인스턴스 기반 단위로 나누어져 있음
     - 개별적으로 실행이 되기 때문에 같은 컴포넌트를 여러번 실행하더라도 다른 내용이 실행될 수 있게 해줌
 
+## 여러 State 사용하기
+- 컴포넌트마다 하나 이상의 state를 가질 수 있음
+  - 각각의 state를 수정해도 다른 state에 영향을 주지 않음
+```js
+const ExpenseForm = () => {
+  const [enteredTitle, setEnteredTitle] = useState('');
+  const [enteredAmount, setEnteredAmount] = useState('');
+  const [enteredDate, setEnteredDate] = useState('');
+
+  const titleChangeHandler = (event) => {
+    setEnteredTitle(event.target.value);
+  };
+
+  const amountChangeHandler = (event) => {
+    setEnteredAmount(event.target.value);
+  };
+
+  const dateChangeHandler = (event) => {
+    setEnteredDate(event.target.value);
+  };
+```
+## 여러 State 사용 대안 1
+- 여러개의 State를 사용해도 되지만 불필요함을 줄이기 위한 대안
+  - 객체로 3가지의 state를 한꺼번에 불러오기
+  - 동시에 많은 state를 업데이트 하게 되면 오래되거나 잘못된 state에 의존할 수도 있음(대안 2 활용)
+```js
+const ExpenseForm = () => {
+  const [userInput, setUserInput] = useState({
+    enteredTitle: '', 
+    enteredAmount: '', 
+    enteredDate: ''
+  });
+
+  const titleChangeHandler = (event) => {
+    setUserInput({
+      ...userInput,
+      enteredTitle: event.target.value,
+    });
+  };
+
+  const amountChangeHandler = (event) => {
+    setUserInput({
+      ...userInput,
+      enteredAmount: event.target.value,
+    });
+  };
+
+  const dateChangeHandler = (event) => {
+    setUserInput({
+      ...userInput,
+      enteredDate: event.target.value,
+    });
+  };
+// ...userInput ➡ 세개를 객체로 한꺼번에 가져왔기 때문에 한가지만 변경해줄 경우 그저 새것으로 업데이트만 되기 때문에 나머지 애들도 가져오기 위해 작성(3가지 중 1가지만 반영되면 나머지가 사라져버림)
+```
+
+## 여러 State 사용 대안 2
+- 모든 계획된 state 업데이트를 기억해두고 최신의 것으로 업데이트 되어 실행시켜줌
+```js
+const titleChangeHandler = (event) => {
+    setUserInput((prevState) => {
+      return {...prevState, enteredTitle: event.target.value};
+    });
+  };
+```
 
 
 
